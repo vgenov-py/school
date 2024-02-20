@@ -2,6 +2,7 @@ import sqlite3
 import datetime as dt
 from secrets import token_hex
 from os import system, get_terminal_size
+import csv
 con = sqlite3.connect("tickets.db")
 cur = con.cursor()
 
@@ -88,3 +89,33 @@ while user.lower() != "q":
         print(next(cur.execute("SELECT * FROM tickets LIMIT 1")))
         con.commit()
         input(": ")
+
+    elif user == "4":
+        print("Exportar")
+
+
+    # Opción 1
+    # headers = cur.execute("pragma table_info(tickets);")
+    # headers_name = []
+    # for header in headers:
+    #     headers_name.append(header[1])
+
+    # # Opción 2 / 2.1
+    # headers = [t[1] for t in cur.execute("pragma table_info(tickets);")] # (t[1] for t in cur.execute("pragma table_info(tickets);"))
+
+    # # Opción 3
+    # def extract_name(row):
+    #     return row[1]
+
+    # headers = map(extract_name, cur.execute("pragma table_info(tickets);"))
+
+    # Opción 4
+        headers = list(map(lambda t: t[1], cur.execute("pragma table_info(tickets);")))
+
+        tickets = cur.execute("SELECT * FROM tickets;")
+
+        with open(f"test.csv", mode="w", encoding="utf-8") as file:
+            csv_writer = csv.writer(file, delimiter=";")
+            csv_writer.writerow(headers)
+            csv_writer.writerows(tickets)
+        input("Base de datos exportada correctamente: ")
