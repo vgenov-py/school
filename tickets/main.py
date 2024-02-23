@@ -11,7 +11,7 @@ def clear():
 width = get_terminal_size().columns
 
 def print_center(word: str, separator:str = " "):
-    print(word.center(int(width/1.1), separator))
+    print(word.center(int(width/1), separator))
 
 def print_full(word: str, separator:str = " "):
     print(word.center(width,separator))
@@ -20,6 +20,8 @@ def menu():
     print_center("1. Crear ticket")
     print_center("2. Eliminar ticket")
     print_center("3. Actualizar ticket")
+    print_center("4. Exportar todo")
+    print_center("5. Exportar por departamento")
     print_center("Q. Salir")
     print_full("_", "_")
 
@@ -113,9 +115,31 @@ while user.lower() != "q":
         headers = list(map(lambda t: t[1], cur.execute("pragma table_info(tickets);")))
 
         tickets = cur.execute("SELECT * FROM tickets;")
-
-        with open(f"test.csv", mode="w", encoding="utf-8") as file:
+        today = str(dt.datetime.now().date()).replace("-", "")
+        with open(f"{today}.csv", mode="w", encoding="utf-8") as file:
             csv_writer = csv.writer(file, delimiter=";")
             csv_writer.writerow(headers)
             csv_writer.writerows(tickets)
         input("Base de datos exportada correctamente: ")
+
+    elif user == "5":
+        clear()
+        print_center("Exportar por departamento")
+        departments = list(cur.execute("SELECT * FROM departments;"))
+        for i, department in enumerate(departments):
+            department_id, department_name = department
+            print(f"{i+1}. {department_name}")
+        user = int(input(": ")) - 1
+        department_id, department_name = departments[user] # ["1", "RRHH"]
+
+        headers = list(map(lambda t: t[1], cur.execute("pragma table_info(tickets);")))
+        tickets = list(cur.execute("SELECT * FROM tickets WHERE department_id = ?",[department_id]))
+        today = str(dt.datetime.now().date()).replace("-", "")
+
+        with open(f"{today}_{department_name}.csv", mode="w", encoding="utf-8") as file:
+            csv_writer = csv.writer(file, delimiter=";")
+            csv_writer.writerow(headers)
+            csv_writer.writerows(tickets)
+        input("Base de datos exportada correctamente: ")
+
+        user = ""    

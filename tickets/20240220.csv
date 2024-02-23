@@ -1,0 +1,9 @@
+id;email;description;datetime;department_id
+1;email@email.com;Nuevo;2024-02-08 19:32:52.283019;1
+a2df31ce8668;email2@email.com;Algo;2024-02-08 20:13:57.307562;1
+033cba917dee;email@gerencia.com;Algo nuevo;2024-02-08 20:29:28.505795;2
+771386a093be;a@email.com;a;2024-02-13 20:17:32.976242;1
+e8066635124f;qq;q;2024-02-13 20:20:14.811111;q
+6e730a6af121;;;2024-02-13 20:25:52.018928;
+380b86274a3a;q;q;2024-02-13 20:29:03.923238;q
+e95a792e1d4a;pepe@email.com;No encuentro el baño;2024-02-13 20:33:02.939352;1

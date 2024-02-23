@@ -9,11 +9,12 @@ app = Flask(__name__)
 def r_table(table):
     print(request.url)
     args = dict(request.args)
-    print(args)
+    user_id = args["id"]
+
     con = sqlite3.connect("tickets.db")
     cur = con.cursor()
     if table in ("tickets", "departments"):
-        data = list(cur.execute(f"SELECT * FROM {table};"))
+        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", (user_id,)))
     else:
         return "Error: Las tablas disponibles son tickets o departamentos"
     return data
