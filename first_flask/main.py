@@ -21,8 +21,6 @@ def r_home():
 def r_table(table):
     print(request.url)
     args = dict(request.args)
-    print("El usuario ha enviado los siguientes argumentos: ", args)
-    user_id = args.get("id")
     '''
     args.keys() -> Todas las claves del diccionario
     args.values() -> Todos los valores
@@ -44,7 +42,14 @@ def r_table(table):
         data = list(cur.execute(f"SELECT * FROM {table} WHERE id = '{user_id}';"))
         data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", [user_id]))
         '''
-        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", [user_id]))
+        if args:
+            args_items = args.items()
+            list_items = list(args_items)
+            k, v = list_items[0]
+            print("El usuario ha enviado los siguientes argumentos: ", args)
+            data = list(cur.execute(f"SELECT * FROM {table} WHERE {k} = ?;", [v]))
+        else:
+            data = list(cur.execute(f"SELECT * FROM {table}"))
     else:
         return f"Error: La tabla {table} Las tablas disponibles son tickets o departamentos"
     return data
