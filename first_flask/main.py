@@ -4,19 +4,49 @@ from secrets import token_hex
 
 app = Flask(__name__)
 
+@app.route("/")
+def r_home():
+    return "Bienvenido al sistema de tickets"
+
+# @app.route("/tickets")
+# def r_table_original():
+#     con = sqlite3.connect("tickets.db")
+#     cur = con.cursor()
+#     data = list(cur.execute(f"SELECT * FROM tickets WHERE id = ?;", ("1",)))
+#     if not data:
+#         return f"No hay valores"
+#     return data
 
 @app.route("/<table>")
 def r_table(table):
     print(request.url)
     args = dict(request.args)
-    user_id = args["id"]
+    print("El usuario ha enviado los siguientes argumentos: ", args)
+    user_id = args.get("id")
+    '''
+    args.keys() -> Todas las claves del diccionario
+    args.values() -> Todos los valores
+    args.items() -> Ambos
+    '''
 
     con = sqlite3.connect("tickets.db")
+    def make_dicts(cursor, row):
+        return dict((cursor.description[idx][0], value)
+            for idx, value in enumerate(row))
+
+    con.row_factory = make_dicts
     cur = con.cursor()
     if table in ("tickets", "departments"):
-        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", (user_id,)))
+        '''
+        table = tickets
+        user_id = 1
+        SELECT * FROM tickets WHERE id = 1;
+        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = '{user_id}';"))
+        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", [user_id]))
+        '''
+        data = list(cur.execute(f"SELECT * FROM {table} WHERE id = ?;", [user_id]))
     else:
-        return "Error: Las tablas disponibles son tickets o departamentos"
+        return f"Error: La tabla {table} Las tablas disponibles son tickets o departamentos"
     return data
 
 if __name__ == "__main__":
