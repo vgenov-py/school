@@ -74,15 +74,15 @@ Las líneas fueron comentadas en pos de simplificar el código
 @app.route("/<table>", methods=["GET", "POST"])
 def r_table(table):
     args = request.args
+    con = sqlite3.connect("tickets.db")
+    def make_dicts(cursor, row):
+        return dict((cursor.description[idx][0], value)
+            for idx, value in enumerate(row))
+
+    con.row_factory = make_dicts
+    cur = con.cursor()
     if request.method == "GET":
 
-        con = sqlite3.connect("tickets.db")
-        def make_dicts(cursor, row):
-            return dict((cursor.description[idx][0], value)
-                for idx, value in enumerate(row))
-
-        con.row_factory = make_dicts
-        cur = con.cursor()
         if table in ("tickets", "departments"):
             if args:
                 args_items = args.items()
@@ -95,7 +95,12 @@ def r_table(table):
             return f"Error: La tabla {table} Las tablas disponibles son tickets o departamentos"
         return data
     elif request.method == "POST":
-        return "Estamos trabajando en ello"
+        new_id = token_hex(6)
+        def new_ticket():
+            cur.execute(f"INSERT INTO {table} VALUES (?,?,?,?,?)", [new_id, "desde@web.com", "description", "2024/10/10", "1"])
+            con.commit()
+        new_ticket()
+        return f"TICKET ({new_id}) CREADO"
 
 if __name__ == "__main__":
     print(__name__)
