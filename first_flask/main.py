@@ -104,4 +104,4 @@ def r_table(table):
 
 if __name__ == "__main__":
     print(__name__)
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
