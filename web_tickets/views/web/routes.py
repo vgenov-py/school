@@ -5,8 +5,13 @@ web = Blueprint("web", __name__)
 
 @web.route("/")
 def t_home():
-    # res = req.get("https://pokeapi.co/api/v2/pokemon/charmander").json()
-    # print(res["sprites"]["back_default"])
+    ticket_id = request.args.get("id")
+    if ticket_id:
+        req.delete("http://localhost:3000/tickets", params={"id": ticket_id})
     print(request.args)
     data = req.get("http://localhost:3000/tickets").json()
     return render_template("index.html", tickets=data)
+
+@web.route("/test")
+def t_base():
+    return render_template("test.html")
