@@ -12,6 +12,7 @@ def t_home():
     data = req.get("http://localhost:3000/tickets").json()
     return render_template("index.html", tickets=data)
 
-@web.route("/test")
-def t_base():
+@web.route("/ticket/<ticket_id>")
+def t_base(ticket_id):
+    print(ticket_id)
     return render_template("test.html")
