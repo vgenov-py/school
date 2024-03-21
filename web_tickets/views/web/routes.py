@@ -3,6 +3,8 @@ import requests as req
 
 web = Blueprint("web", __name__)
 
+base_api_url = "http://localhost:3000"
+
 @web.route("/")
 def t_home():
     ticket_id = request.args.get("id")
@@ -14,5 +16,15 @@ def t_home():
 
 @web.route("/ticket/<ticket_id>")
 def t_base(ticket_id):
-    print(ticket_id)
-    return render_template("test.html")
+    ticket = req.get(f"{base_api_url}/tickets", params={"id":ticket_id}).json()
+    try:
+        ticket = ticket[0]
+    except IndexError:
+        return render_template("ticket.html", ticket_id=ticket_id)
+    return render_template("ticket.html", ticket=ticket)
+
+@web.route("/ticket/update/<ticket_id>", methods=["GET", "POST"])
+def t_update(ticket_id):
+    print(request.form)
+    # ticket = req.get(f"{base_api_url}/tickets", params={"id":ticket_id}).json()
+    return render_template("update.html")
