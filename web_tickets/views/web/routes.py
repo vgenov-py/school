@@ -25,6 +25,7 @@ def t_base(ticket_id):
 
 @web.route("/ticket/update/<ticket_id>", methods=["GET", "POST"])
 def t_update(ticket_id):
-    print(request.form)
-    # ticket = req.get(f"{base_api_url}/tickets", params={"id":ticket_id}).json()
+    params = dict(request.form)
+    params["ticket_id"] = ticket_id # {id:1, description: "nueva descripción"}
+    ticket = req.patch(f"{base_api_url}/tickets", params=params).json()
     return render_template("update.html")
