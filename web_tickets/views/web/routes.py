@@ -27,5 +27,8 @@ def t_base(ticket_id):
 def t_update(ticket_id):
     params = dict(request.form)
     params["ticket_id"] = ticket_id # {id:1, description: "nueva descripción"}
-    ticket = req.patch(f"{base_api_url}/tickets", params=params).json()
+    res_api = req.patch(f"{base_api_url}/tickets", params=params)
+    if res_api.status_code == 200:
+        res_api = res_api.json()
+        print("Ticket actualizado!")
     return render_template("update.html")

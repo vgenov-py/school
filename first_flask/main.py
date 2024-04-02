@@ -71,7 +71,7 @@ Las líneas fueron comentadas en pos de simplificar el código
 #         return f"Error: La tabla {table} Las tablas disponibles son tickets o departamentos"
 #     return data
 
-@app.route("/<table>", methods=["GET", "POST", "DELETE"])
+@app.route("/<table>", methods=["GET", "POST", "DELETE", "PATCH"])
 def r_table(table):
     args = request.args
     con = sqlite3.connect("tickets.db")
@@ -109,6 +109,10 @@ def r_table(table):
             return {"success": True, "message": f"Ticket con identificador: {ticket_id} eliminado correctamente"}
         else:
             return {"success": False, "message": "Debes enviar un identificador"}
+    elif request.method == "PATCH":
+        cur.execute(f"UPDATE {table} SET description = ? WHERE id = ?;", list(args.values()))
+        con.commit()
+        return {"success": True}
 
 if __name__ == "__main__":
     print(__name__)
