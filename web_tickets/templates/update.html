@@ -16,9 +16,17 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form> -->
+{% with messages = get_flashed_messages() %}
+{%for msg in messages%}
+<div class="alert alert-success position-absolute top-0 mt-5" role="alert">
+  {{msg}}
+</div>
+{%endfor%}
 <form action="" method="post"> 
     <label for="">Descripción del ticket:</label>
     <input name="description" type="text" required>
     <button type="submit">Enviar descripción</button>
 </form>
+{%endwith%}
+<h1>XXXX</h1>
 {%endblock%}

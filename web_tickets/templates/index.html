@@ -1,5 +1,18 @@
 {%extends "base.html"%}
+{%block head%}
+<!-- Agregado desde index.html -->
+<script src="/static/msgs.js" defer></script>
+{%endblock%}
 {%block main%}
+{% with messages = get_flashed_messages() %}
+{%if messages%}
+    {%for msg in messages%}
+    <div class="alert alert-success position-absolute top-0 mt-5" role="alert" id="msg">
+    {{msg}}
+    </div>
+    {%endfor%}
+{%endif%}
+{%endwith%}
 <table class="table border">
     <thead>
         <tr>
