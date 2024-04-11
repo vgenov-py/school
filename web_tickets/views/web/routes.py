@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, session
+from flask import Blueprint, render_template, request, flash, redirect, session, current_app
 import requests as req
+from db import get_db
 
 web = Blueprint("web", __name__)
 
@@ -13,6 +14,20 @@ def t_home():
     print(request.args)
     data = req.get("http://localhost:3000/tickets").json()
     return render_template("index.html", tickets=data)
+
+@web.route("/login", methods=["GET", "POST"])
+def t_login():
+    print(request.form)
+    '''
+    Comprobar email y pwd de formulario con email y pwd de DB
+    1. Usuario envia user y pwd por form {email: test1@email.com, pwd: 1234}
+    2. Filtrar user en DB por email WHERE email = "test1@email.com" {pwd: 1234}
+    3. Comprobar que pwd de user en DB sea igual o no a PWD de formulario 
+    '''
+    con = get_db()
+    cur = con.cursor()
+    print(tuple(cur.execute("SELECT * FROM users;")))
+    return render_template("login.html")
 
 @web.route("/ticket/<ticket_id>")
 def t_base(ticket_id):
